@@ -15,6 +15,16 @@ function genPass() {
     });
 }
 
+function genOTP() {
+    return generator.generate({
+        length: 5,
+        numbers: true,
+        lowercase: false,
+        uppercase: false,
+        strict: true
+    });
+}
+
 exports.login = async (req, res, next) => {
     try {
         let params = req.body;
@@ -50,23 +60,23 @@ exports.changePassword = async (req, res, next) => {
     }
 }
 
-exports.addUser = async (req, res, next) => {
+exports.register = async (req, res, next) => {
     try {
         let params = req.body;
-
-        if (!(await User.findOne({_id: params._id, active: true, admin: true}))) throw new customError.ForbiddenAccessError("not admin or not active");
 
         if (await User.findOne({phone: params.phone})) throw new customError.DuplicateResourceError("user with phone already exists");
 
         let password = genPass();
+        let otp = genOTP();
 
         let newUser = new User({
             phone: params.phone,
             password: password,
             name: params.name,
-            active: true,
+            active: false,
             admin: false,
-            skey: params.skey
+            skey: params.skey,
+            otp: otp
         });
 
         await newUser.save();
@@ -77,13 +87,16 @@ exports.addUser = async (req, res, next) => {
         Hello ${params.name},
         Your account at Avicenna App has been created. The following are your credentials:
         Phone: *${params.phone}*
-        Password: *${password}*`;
+        Password: *${password}*
+        
+        Following is the 5-digit OTP key you need to verify your account:
+        OTP: ${otp}`;
 
         await whatsapp.sendMessage(params.phone, params.skey, message);
 
         res.json({
             statusCode: 200,
-            message: "Added User Successfully!"
+            message: "Registration Successfull!"
         })
     } catch(e) {
         next(e);
@@ -137,6 +150,27 @@ exports.getUsers = async (req, res, next) => {
             statusCode: 200,
             message: "Fetched User(s) Successfully!",
             users: users
+        })
+    } catch(e) {
+        next(e);
+    }
+}
+
+exports.verify = async (req, res, next) => {
+    try {
+        let params = req.body;
+
+        let reqUser = await User.findOne({phone: params.phone});
+
+        if (!reqUser) throw new customError.NotFoundError("user not found");
+
+        if (reqUser.otp != params.otp) throw new customError.NotFoundError("invalid otp");
+
+        await reqUser.update({otp: "", active: true});
+
+        res.json({
+            statusCode: 200,
+            message: "Verification Successfull!"
         })
     } catch(e) {
         next(e);

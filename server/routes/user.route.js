@@ -22,10 +22,9 @@ router.post(
 
 // API 1.3 Add User:
 router.post(
-    '/add',
-    validate(userValidation.addUser, { keyByField: true }),
-    verifyUser,
-    userController.addUser
+    '/register',
+    validate(userValidation.register, { keyByField: true }),
+    userController.register
 );
 
 // API 1.4 Edit User:
@@ -41,6 +40,13 @@ router.post(
     '/get',
     verifyUser,
     userController.getUsers
+);
+
+// API 1.6 Verify User:
+router.post(
+    '/verify',
+    validate(userValidation.verify, { keyByField: true }),
+    userController.verify
 );
 
 module.exports = router;

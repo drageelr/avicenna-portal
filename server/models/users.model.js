@@ -27,6 +27,10 @@ const userSchema = new Schema({
     skey: {
         type: Number,
         required: true,
+    },
+    otp: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true

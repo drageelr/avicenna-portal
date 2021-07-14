@@ -17,7 +17,7 @@ exports.changePassword = {
 };
 
 // API 1.3:
-exports.addUser = {
+exports.register = {
     body: Joi.object({
         phone: Joi.string().required(),
         name: Joi.string().required(),
@@ -34,5 +34,13 @@ exports.editUser = {
         active: Joi.boolean(),
         admin: Joi.boolean(),
         skey: Joi.number().integer()
+    })
+};
+
+// API 1.6:
+exports.verify = {
+    body: Joi.object({
+        phone: Joi.string().required(),
+        otp: Joi.integer().required()
     })
 };
