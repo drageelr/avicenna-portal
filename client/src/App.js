@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import Default from './components/Default';
+import Poll from './components/Poll';
 
 function App() {
     const [user, setUser] = React.useState((() => {
@@ -23,9 +24,10 @@ function App() {
         <BrowserRouter>
             <NavBar handleSetUser={handleSetUser} user={user}/>
             <Switch>
-                <Route exact path="/users"/>
-                <Route exact path="/polls"/>
                 <Route exact path="/" component={Default}/>
+                <Route exact path="/polls" component={user && Poll}/>
+                <Route exact path="/polls/view"/>
+                <Route exact path="/users"/>
             </Switch>
         </BrowserRouter>
     );

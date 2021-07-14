@@ -5,12 +5,6 @@ import { useFormik } from 'formik'
 import * as yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        "& > *": {
-            margin: theme.spacing(2),
-            height: theme.spacing(100)
-        }
-    },
     textBig: {
         flexGrow: 1,
         fontWeight: 'bold',
@@ -44,7 +38,8 @@ const useStyles = makeStyles((theme) => ({
         maxHeight: 100,
     },
     paperRoot: {
-        backgroundColor: "#0d47a1"
+        backgroundColor: "#0d47a1",
+        margin: theme.spacing(2),
     },
     redButton: {
         backgroundColor: "#cc0e0e",
@@ -169,8 +164,8 @@ function Default() {
     });
 
     return (
-        <div className={classes.root}>
-            <Paper elevation={4} fullWidth className={classes.paperRoot}>
+        <div>
+            <Paper elevation={4} className={classes.paperRoot}>
                 <br/>
                 <Grid container direction="column" justifyContent="center" alignItems="center" spacing={2}>
                     <Grid item>
